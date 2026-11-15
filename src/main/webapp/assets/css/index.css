@@ -17,7 +17,7 @@ body {
 
 .sidebar {
     width: 260px;
-    padding: 20px 0 20px 20px;
+    padding: 20px 16px 20px 20px;
     display: flex;
     flex-direction: column;
 }
@@ -44,14 +44,25 @@ body {
     background-color: #0d684c;
     color: white;
     border: none;
-    border-radius: 20px;
-    padding: 8px 15px;
-    width: 90%;
-    text-align: left;
+    border-radius: 22px;
+    padding: 10px 18px;
+    width: 100%;
     font-size: 14px;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-nuevo-contacto:hover {
+    background-color: #094d35;
+    color: white;
+}
+
+.btn-nuevo-contacto:active {
+    transform: scale(0.98);
 }
 
 .nav-list {
@@ -64,9 +75,26 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px 10px 0;
+    padding: 9px 14px;
+    margin-bottom: 2px;
+    border-radius: 12px;
     cursor: pointer;
     color: #202124;
+    transition: background-color 0.2s ease;
+}
+
+.nav-item:hover {
+    background-color: #f4f5f6;
+}
+
+.nav-item.active {
+    background-color: #efefef;
+    color: #202124;
+    font-weight: 500;
+}
+
+.nav-item.active:hover {
+    background-color: #e6e6e6;
 }
 
 .nav-item-content {
@@ -74,18 +102,46 @@ body {
     align-items: center;
 }
 
+.grupos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px 6px 14px;
+    margin-bottom: 4px;
+}
+
+.grupos-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5f6368;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.grupos-section .bi-plus {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.grupos-section .bi-plus:hover {
+    background-color: #f1f3f4;
+    color: #202124 !important;
+}
+
 .sub-list {
-    padding-left: 20px;
+    padding-left: 0;
     font-size: 14px;
 }
 
 .sub-list .nav-item {
-    padding: 6px 20px 6px 0;
-}
-
-.grupos-title {
-    font-size: 15px;
-    color: #202124;
+    padding: 8px 14px;
+    text-transform: capitalize;
 }
 
 .contacts-list-panel {
@@ -102,6 +158,11 @@ body {
     border-radius: 20px;
     padding: 5px 10px;
     background-color: #ffffff;
+    transition: border-color 0.2s ease;
+}
+
+.search-bar:focus-within {
+    border-color: #0d684c;
 }
 
 .search-bar input {
@@ -110,7 +171,7 @@ body {
     width: 100%;
     margin-left: 10px;
     font-size: 14px;
-    color: #757575;
+    color: #202124;
 }
 
 .search-bar input::placeholder {
@@ -122,6 +183,8 @@ body {
     padding: 3px 12px;
     border-radius: 5px;
     border: 1px solid #757575;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-filter.outline {
@@ -129,10 +192,20 @@ body {
     color: #202124;
 }
 
+.btn-filter.outline:hover {
+    background-color: #f5f5f5;
+    border-color: #202124;
+}
+
 .btn-filter.filled {
     background-color: #e0e0e0;
     border-color: #e0e0e0;
     color: #202124;
+}
+
+.btn-filter.filled:hover {
+    background-color: #d2d2d2;
+    border-color: #d2d2d2;
 }
 
 .contacts-scroll {
@@ -154,7 +227,15 @@ body {
 .contact-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.contact-item:hover {
+    background-color: #f1f3f4;
 }
 
 .avatar {
@@ -199,4 +280,37 @@ body {
 .empty-text {
     color: #b0b0b0;
     font-size: 18px;
+}
+
+.toast-flotante {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+    opacity: 0;
+    transform: translateY(-12px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast-flotante.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-exito {
+    background-color: #0d684c;
+    color: #ffffff;
+}
+
+.toast-error {
+    background-color: #b3261e;
+    color: #ffffff;
 }

@@ -1,0 +1,39 @@
+package mx.edu.utez.contactos.model;
+
+public class Grupo {
+    private int idGrupo;
+    private String nombre;
+    private int totalContactos;
+
+    public Grupo() {
+    }
+
+    public Grupo(int idGrupo, String nombre) {
+        this.idGrupo = idGrupo;
+        this.nombre = nombre;
+    }
+
+    public int getIdGrupo() {
+        return idGrupo;
+    }
+
+    public void setIdGrupo(int idGrupo) {
+        this.idGrupo = idGrupo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getTotalContactos() {
+        return totalContactos;
+    }
+
+    public void setTotalContactos(int totalContactos) {
+        this.totalContactos = totalContactos;
+    }
+}
