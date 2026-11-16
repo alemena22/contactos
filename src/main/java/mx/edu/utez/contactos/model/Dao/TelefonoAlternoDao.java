@@ -52,4 +52,11 @@ public class TelefonoAlternoDao {
         }
         return lista;
     }
+    public void eliminarPorContacto(Connection con, int idContacto) throws SQLException {
+        String sql = "DELETE FROM TELEFONO_ALTERNO WHERE id_contacto = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idContacto);
+            ps.executeUpdate();
+        }
+    }
 }

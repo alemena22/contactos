@@ -26,6 +26,9 @@ public class ListaSimple {
         return inicio;
     }
 
+    public void setInicio(NodoTelefono inicio) {
+        this.inicio = inicio;
+    }
     public boolean isEmpty() {
         return inicio == null;
     }

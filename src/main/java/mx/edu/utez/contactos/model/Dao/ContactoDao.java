@@ -140,4 +140,120 @@ public class ContactoDao {
             return false;
         }
     }
+    public Contacto getById(int idContacto) {
+        Contacto c = null;
+        String sql = "SELECT c.id_contacto, c.nombre, c.apellido_paterno, c.apellido_materno, " +
+                "c.telefono, c.correo, c.id_grupo, c.fecha_alta, g.nombre AS nombre_grupo " +
+                "FROM CONTACTO c " +
+                "LEFT JOIN GRUPO g ON c.id_grupo = g.id_grupo " +
+                "WHERE c.id_contacto = ? AND c.eliminado_en IS NULL";
+
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idContacto);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    c = new Contacto();
+                    c.setIdContacto(rs.getInt("id_contacto"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setApellidoPaterno(rs.getString("apellido_paterno"));
+                    c.setApellidoMaterno(rs.getString("apellido_materno"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setCorreo(rs.getString("correo"));
+                    c.setIdGrupo(rs.getInt("id_grupo"));
+                    c.setFechaAlta(rs.getTimestamp("fecha_alta"));
+
+                    // Cargamos los teléfonos alternos asociados usando el DAO existente
+                    c.getTelefonosAlternos().setInicio(telefonoAlternoDao.getByContacto(idContacto).getInicio());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return c;
+    }
+    public boolean telefonoExistenteExcluyendo(String telefono, int idContacto) {
+        String sql = "SELECT 1 FROM CONTACTO WHERE telefono = ? AND id_contacto <> ?";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, telefono);
+            ps.setInt(2, idContacto);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean correoExistenteExcluyendo(String correo, int idContacto) {
+        String sql = "SELECT 1 FROM CONTACTO WHERE correo = ? AND id_contacto <> ?";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            ps.setInt(2, idContacto);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean update(Contacto entidad) {
+        String sql = "UPDATE CONTACTO SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, telefono = ?, correo = ?, id_grupo = ? WHERE id_contacto = ?";
+        Connection con = null;
+        try {
+            con = SQLconnector.getConnection();
+            con.setAutoCommit(false);
+
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setString(1, entidad.getNombre());
+                ps.setString(2, entidad.getApellidoPaterno());
+                ps.setString(3, entidad.getApellidoMaterno().isEmpty() ? null : entidad.getApellidoMaterno());
+                ps.setString(4, entidad.getTelefono());
+                ps.setString(5, entidad.getCorreo().isEmpty() ? null : entidad.getCorreo());
+                ps.setInt(6, entidad.getIdGrupo());
+                ps.setInt(7, entidad.getIdContacto());
+
+                int filasAfectadas = ps.executeUpdate();
+                if (filasAfectadas == 0) {
+                    throw new SQLException("No se pudo actualizar el contacto.");
+                }
+
+                // Reemplazar teléfonos alternos
+                telefonoAlternoDao.eliminarPorContacto(con, entidad.getIdContacto());
+                telefonoAlternoDao.insertarLista(con, entidad.getIdContacto(), entidad.getTelefonosAlternos());
+
+                con.commit();
+                return true;
+            }
+        } catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

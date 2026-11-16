@@ -314,3 +314,125 @@ body {
     background-color: #b3261e;
     color: #ffffff;
 }
+/* Estilos para la animación de transición en el panel derecho */
+#panelContenido {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#panelContenido.fade-out {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+#panelContenido.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+.avatar-lg {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.btn-action-card {
+    min-width: 90px;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #202124;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-action-card:hover {
+    background-color: #f8f9fa;
+    border-color: #b0b0b0;
+}
+
+.detalle-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+/* Contenedor relativo para posicionar la barra alfabética flotante a la derecha */
+.contacts-list-container-wrapper {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Barra lateral alfabética (A-Z) */
+.alphabet-sidebar {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 10;
+    user-select: none;
+    line-height: 1.35;
+}
+
+.alphabet-letter {
+    color: #bdbdbd;
+    text-decoration: none;
+    padding: 1px 4px;
+    cursor: default;
+    transition: color 0.15s ease;
+}
+
+.alphabet-letter.active {
+    color: #0d684c;
+    cursor: pointer;
+}
+
+.alphabet-letter.active:hover {
+    font-weight: 700;
+    transform: scale(1.15);
+}
+
+/* Encabezados de separación por letra en la lista */
+.section-letter-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d684c;
+    padding: 8px 10px 4px 10px;
+    margin-top: 6px;
+}
+/* Transición suave para el contenedor de la lista de contactos */
+#listaContactos {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#listaContactos.fade-out {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+#listaContactos.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -37,4 +37,31 @@ public class GrupoDao {
         }
         return lista;
     }
+    public boolean existeNombre(String nombre) {
+        String sql = "SELECT 1 FROM GRUPO WHERE LOWER(nombre) = LOWER(?)";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean create(String nombre) {
+        String sql = "INSERT INTO GRUPO(nombre) VALUES(?)";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nombre.trim());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
