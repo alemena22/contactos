@@ -436,3 +436,117 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+/* ==========================================
+   ESTILOS PARA EL INDICADOR DE ESTADO (USABILIDAD)
+   ========================================== */
+#statusIndicatorContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: none; /* Oculto por defecto */
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#statusIndicatorContainer:hover {
+    transform: scale(1.05);
+}
+
+/* Spinner de carga */
+.status-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0d684c;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Círculos de éxito y fracaso */
+.status-icon {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.status-icon.success {
+    background-color: #d1efe6;
+    color: #0d684c;
+}
+
+.status-icon.error {
+    background-color: #fde8e8;
+    color: #b3261e;
+}
+
+/* Pestaña flotante / fantasma (Tooltip al hacer hover) */
+#statusTooltip {
+    position: fixed;
+    top: 26px;
+    right: 74px; /* Aparece justo a la izquierda del círculo */
+    background-color: #202124;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateX(6px);
+    z-index: 10001;
+    pointer-events: none;
+}
+
+#statusIndicatorContainer:hover #statusTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+/* Botón de cierre ("X") dentro del indicador de estado */
+#statusCloseBtn {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    background-color: #5f6368;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    font-size: 12px;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10002;
+}
+
+#statusIndicatorContainer:hover #statusCloseBtn {
+    display: flex; /* Se muestra la "X" al pasar el mouse por encima del círculo */
+}
+
+#statusCloseBtn:hover {
+    background-color: #b3261e;
+}

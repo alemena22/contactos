@@ -37,6 +37,11 @@
 </head>
 <body>
 
+<!-- Mensaje de éxito que llega por ?exito=... tras guardar/actualizar -->
+<c:if test="${not empty param.exito}">
+    <div id="alertaFlotante" data-tipo="exito" data-mensaje="<c:out value='${param.exito}' escapeXml='true' />"></div>
+</c:if>
+
 <div class="app-container">
 
     <!-- BARRA LATERAL FIJA -->
@@ -368,14 +373,31 @@
                         inicializarFormularioDinamico();
                     }
 
+                    // Interceptar el formulario inyectado: un solo listener, envío urlencoded
+                    const formDinamico = panelContenido.querySelector("form");
+                    if (formDinamico) {
+                        formDinamico.addEventListener("submit", (e) => {
+                            e.preventDefault();
+                            enviarFormularioAjax(formDinamico);
+                        });
+                    }
+
                     const btnCancelarGrupo = document.getElementById("btnCancelarGrupo");
                     if (btnCancelarGrupo) {
                         btnCancelarGrupo.addEventListener("click", () => cambiarPanelDerecho(null, true));
                     }
 
+                    // Cancelar: en edición vuelve al detalle, en nuevo contacto/grupo al estado vacío
                     const btnCancelarForm = document.getElementById("btnCancelar");
-                    if (btnCancelarForm && !document.getElementById("btnCancelarEdit")) {
-                        btnCancelarForm.addEventListener("click", () => cambiarPanelDerecho(null, true));
+                    if (btnCancelarForm) {
+                        btnCancelarForm.addEventListener("click", () => {
+                            const inputId = document.querySelector("input[name='idContacto']");
+                            if (inputId) {
+                                cambiarPanelDerecho("detalle-contacto?id=" + inputId.value);
+                            } else {
+                                cambiarPanelDerecho(null, true);
+                            }
+                        });
                     }
 
                     const btnEditar = document.getElementById("btnEditarContacto");
