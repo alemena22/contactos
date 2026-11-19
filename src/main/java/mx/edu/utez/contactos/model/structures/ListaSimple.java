@@ -1,6 +1,7 @@
 package mx.edu.utez.contactos.model.structures;
 
 import mx.edu.utez.contactos.model.TelefonoAlterno;
+import mx.edu.utez.contactos.model.structures.nodos.NodoTelefono;
 
 public class ListaSimple {
     private NodoTelefono inicio;

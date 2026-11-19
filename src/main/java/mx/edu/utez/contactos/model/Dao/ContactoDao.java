@@ -2,6 +2,7 @@ package mx.edu.utez.contactos.model.Dao;
 
 import mx.edu.utez.contactos.model.Contacto;
 import mx.edu.utez.contactos.model.structures.ListaDoble;
+import mx.edu.utez.contactos.model.structures.PilaEliminar;
 import mx.edu.utez.contactos.utils.SQLconnector;
 
 import java.sql.Connection;
@@ -255,5 +256,60 @@ public class ContactoDao {
                 }
             }
         }
+    }
+    public boolean eliminar(int idContacto) {
+        String sql = "UPDATE CONTACTO SET eliminado_en = CURRENT_TIMESTAMP WHERE id_contacto = ?";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idContacto);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean restaurar(int idContacto) {
+        String sql = "UPDATE CONTACTO SET eliminado_en = NULL WHERE id_contacto = ?";
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idContacto);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public PilaEliminar getEliminadosPila() {
+        PilaEliminar pila = new PilaEliminar();
+        String sql = "SELECT id_contacto, nombre, apellido_paterno, apellido_materno, telefono, correo, id_grupo, eliminado_en " +
+                "FROM CONTACTO " +
+                "WHERE eliminado_en IS NOT NULL " +
+                "ORDER BY eliminado_en ASC";
+
+        try (Connection con = SQLconnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Contacto c = new Contacto();
+                c.setIdContacto(rs.getInt("id_contacto"));
+                c.setNombre(rs.getString("nombre"));
+                c.setApellidoPaterno(rs.getString("apellido_paterno"));
+                c.setApellidoMaterno(rs.getString("apellido_materno"));
+                c.setTelefono(rs.getString("telefono"));
+                c.setCorreo(rs.getString("correo"));
+                c.setIdGrupo(rs.getInt("id_grupo"));
+                c.setEliminadoEn(rs.getTimestamp("eliminado_en"));
+                pila.push(c);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return pila;
     }
 }

@@ -2,7 +2,7 @@ package mx.edu.utez.contactos.model.Dao;
 
 import mx.edu.utez.contactos.model.TelefonoAlterno;
 import mx.edu.utez.contactos.model.structures.ListaSimple;
-import mx.edu.utez.contactos.model.structures.NodoTelefono;
+import mx.edu.utez.contactos.model.structures.nodos.NodoTelefono;
 import mx.edu.utez.contactos.utils.SQLconnector;
 
 import java.sql.Connection;

@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="mx.edu.utez.contactos.model.structures.NodoTelefono" %>
+<%@ page import="mx.edu.utez.contactos.model.structures.nodos.NodoTelefono" %>
 
 <c:if test="${not empty error}">
     <div id="alertaFlotante" data-tipo="error" data-mensaje="<c:out value='${error}' escapeXml='true' />"></div>

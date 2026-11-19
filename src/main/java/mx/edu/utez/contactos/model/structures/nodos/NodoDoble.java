@@ -1,4 +1,4 @@
-package mx.edu.utez.contactos.model.structures;
+package mx.edu.utez.contactos.model.structures.nodos;
 
 import mx.edu.utez.contactos.model.Contacto;
 

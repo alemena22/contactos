@@ -436,9 +436,7 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
-/* ==========================================
-   ESTILOS PARA EL INDICADOR DE ESTADO (USABILIDAD)
-   ========================================== */
+
 #statusIndicatorContainer {
     position: fixed;
     top: 20px;
@@ -496,11 +494,11 @@ body {
     color: #b3261e;
 }
 
-/* Pestaña flotante / fantasma (Tooltip al hacer hover) */
+/* Pestaña flotante */
 #statusTooltip {
     position: fixed;
     top: 26px;
-    right: 74px; /* Aparece justo a la izquierda del círculo */
+    right: 74px;
     background-color: #202124;
     color: #ffffff;
     padding: 6px 12px;
@@ -544,7 +542,7 @@ body {
 }
 
 #statusIndicatorContainer:hover #statusCloseBtn {
-    display: flex; /* Se muestra la "X" al pasar el mouse por encima del círculo */
+    display: flex;
 }
 
 #statusCloseBtn:hover {

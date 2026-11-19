@@ -3,7 +3,7 @@
 <%@ page import="mx.edu.utez.contactos.model.Dao.ContactoDao" %>
 <%@ page import="mx.edu.utez.contactos.model.Contacto" %>
 <%@ page import="mx.edu.utez.contactos.model.structures.ListaDoble" %>
-<%@ page import="mx.edu.utez.contactos.model.structures.NodoDoble" %>
+<%@ page import="mx.edu.utez.contactos.model.structures.nodos.NodoDoble" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -37,14 +37,34 @@
 </head>
 <body>
 
-<!-- Mensaje de éxito que llega por ?exito=... tras guardar/actualizar -->
 <c:if test="${not empty param.exito}">
     <div id="alertaFlotante" data-tipo="exito" data-mensaje="<c:out value='${param.exito}' escapeXml='true' />"></div>
 </c:if>
 
+<c:if test="${not empty param.eliminadoId}">
+    <div id="toastEliminado" class="toast-flotante toast-exito" style="position: fixed; bottom: 24px; right: 24px; top: auto; background-color: #202124; color: #fff; z-index: 9999; display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+        <span><c:out value='${param.exito}' escapeXml='true' /></span>
+        <form action="restaurar-contacto" method="POST" class="d-inline m-0">
+            <input type="hidden" name="id" value="${param.eliminadoId}">
+            <button type="submit" class="btn btn-link text-warning text-decoration-none p-0 fw-bold ms-2" style="background: none; border: none;">Deshacer</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toast = document.getElementById("toastEliminado");
+            if (toast) {
+                requestAnimationFrame(() => toast.classList.add("visible"));
+                setTimeout(() => {
+                    toast.classList.remove("visible");
+                    setTimeout(() => toast.remove(), 300);
+                }, 6000);
+            }
+        });
+    </script>
+</c:if>
+
 <div class="app-container">
 
-    <!-- BARRA LATERAL FIJA -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <img src="https://ui-avatars.com/api/?name=C&background=333&color=fff&rounded=true" alt="Logo" class="logo-img">
@@ -65,7 +85,7 @@
                     <span class="count" id="countTodos">${fn:length(contactos)}</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="navEliminados">
                 <div class="nav-item-content">
                     <i class="bi bi-trash3 fs-5 me-3"></i>
                     <span class="fs-5">Eliminados</span>
@@ -90,7 +110,6 @@
         </div>
     </aside>
 
-    <!-- PANEL CENTRAL DE LISTA DE CONTACTOS -->
     <main class="contacts-list-panel border-end border-start">
         <div class="p-4 pb-2">
             <h2 class="fw-normal mb-0" id="tituloLista">Todos los contactos</h2>
@@ -101,17 +120,14 @@
                 <input type="text" id="buscar" maxlength="100" placeholder="Busca por nombre, teléfono o correo">
             </div>
 
-            <!-- Botones de filtro A-Z y Recientes -->
             <div class="d-flex gap-2 mb-4">
                 <button type="button" id="btnFiltroAZ" class="btn-filter filled">A-Z</button>
                 <button type="button" id="btnFiltroRecientes" class="btn-filter outline">Recientes</button>
             </div>
         </div>
 
-        <!-- Contenedor con scroll y barra lateral A-Z integrada -->
         <div class="contacts-list-container-wrapper">
             <div class="contacts-scroll px-4 pb-4" id="listaContactos">
-                <!-- Renderizado inicial seguro mediante JSTL con atributos de datos -->
                 <c:forEach var="c" items="${contactos}">
                     <div class="contact-item"
                          data-id="${c.idContacto}"
@@ -132,14 +148,10 @@
                 </c:forEach>
             </div>
 
-            <!-- Barra lateral alfabética -->
-            <div class="alphabet-sidebar" id="alphabetSidebar">
-                <!-- Se genera dinámicamente con JS -->
-            </div>
+            <div class="alphabet-sidebar" id="alphabetSidebar"></div>
         </div>
     </main>
 
-    <!-- PANEL DERECHO DINÁMICO -->
     <section id="panelContenido" class="empty-state-panel">
         <div class="text-center text-muted">
             <i class="bi bi-person empty-icon mb-2 d-block"></i>
@@ -152,11 +164,10 @@
 <script src="${pageContext.request.contextPath}/assets/js/alertas.js"></script>
 <script>
     let listaContactosOriginales = [];
-    let modoOrden = "AZ"; // 'AZ' por defecto o 'Recientes'
-    let filtroGrupoActual = null; // null = Todos, o ID de grupo
+    let modoOrden = "AZ";
+    let filtroGrupoActual = null;
 
     document.addEventListener("DOMContentLoaded", () => {
-        // Capturar los elementos renderizados por JSTL en un array de objetos JavaScript de forma segura
         const elementosDOM = document.querySelectorAll("#listaContactos .contact-item");
         elementosDOM.forEach(el => {
             listaContactosOriginales.push({
@@ -172,7 +183,6 @@
 
         renderizarContactos();
 
-        // Eventos de filtros A-Z y Recientes
         document.getElementById("btnFiltroAZ").addEventListener("click", async () => {
             if (modoOrden === "AZ") return;
             modoOrden = "AZ";
@@ -189,7 +199,6 @@
             await renderizarContactos();
         });
 
-        // Evento para "Todos" en el sidebar
         document.getElementById("navTodos").addEventListener("click", async (e) => {
             e.preventDefault();
             filtroGrupoActual = null;
@@ -200,7 +209,14 @@
             await renderizarContactos();
         });
 
-        // Evento global para el botón de agregar grupo (+) en el sidebar
+        document.getElementById("navEliminados").addEventListener("click", async (e) => {
+            e.preventDefault();
+            actualizarClaseActivaSidebar(document.getElementById("navEliminados"));
+            document.getElementById("tituloLista").textContent = "Eliminados";
+            document.querySelectorAll(".contact-item").forEach(ci => ci.classList.remove("bg-light"));
+            cambiarPanelDerecho("eliminados");
+        });
+
         const btnNuevoGrupo = document.getElementById("btnNuevoGrupo");
         if (btnNuevoGrupo) {
             btnNuevoGrupo.addEventListener("click", function(e) {
@@ -210,7 +226,6 @@
             });
         }
 
-        // Eventos para cada botón de grupo en el sidebar
         document.querySelectorAll(".grupo-item").forEach(item => {
             item.addEventListener("click", async function() {
                 const idGrupo = parseInt(this.getAttribute("data-id-grupo"));
@@ -228,7 +243,6 @@
         });
     });
 
-    // Función asíncrona para renderizar y ordenar con animaciones fluidas
     async function renderizarContactos() {
         const contenedor = document.getElementById("listaContactos");
         const sidebar = document.getElementById("alphabetSidebar");
@@ -240,7 +254,6 @@
         contenedor.innerHTML = "";
         sidebar.innerHTML = "";
 
-        // Filtrar por grupo si está seleccionado
         let contactosFiltrados = listaContactosOriginales;
         if (filtroGrupoActual !== null) {
             contactosFiltrados = listaContactosOriginales.filter(c => c.idGrupo === filtroGrupoActual);
@@ -280,7 +293,6 @@
                 contenedor.appendChild(crearElementoContacto(c));
             });
 
-            // Construir barra lateral A-Z
             const alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
             alfabeto.forEach(letra => {
                 const a = document.createElement("a");
@@ -307,7 +319,6 @@
             });
         }
 
-        // Reasignar eventos de clic para ver el detalle de cada contacto
         document.querySelectorAll(".contact-item").forEach(item => {
             item.addEventListener("click", function() {
                 document.querySelectorAll(".contact-item").forEach(ci => ci.classList.remove("bg-light"));
@@ -373,9 +384,8 @@
                         inicializarFormularioDinamico();
                     }
 
-                    // Interceptar el formulario inyectado: un solo listener, envío urlencoded
                     const formDinamico = panelContenido.querySelector("form");
-                    if (formDinamico) {
+                    if (formDinamico && !formDinamico.action.includes("eliminar-contacto") && !formDinamico.action.includes("restaurar-contacto")) {
                         formDinamico.addEventListener("submit", (e) => {
                             e.preventDefault();
                             enviarFormularioAjax(formDinamico);
@@ -387,7 +397,6 @@
                         btnCancelarGrupo.addEventListener("click", () => cambiarPanelDerecho(null, true));
                     }
 
-                    // Cancelar: en edición vuelve al detalle, en nuevo contacto/grupo al estado vacío
                     const btnCancelarForm = document.getElementById("btnCancelar");
                     if (btnCancelarForm) {
                         btnCancelarForm.addEventListener("click", () => {

@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="mx.edu.utez.contactos.model.structures.NodoTelefono" %>
+<%@ page import="mx.edu.utez.contactos.model.structures.nodos.NodoTelefono" %>
 
 <div class="detalle-panel">
     <c:choose>
@@ -18,13 +18,15 @@
                 <button type="button" id="btnEditarContacto" data-id="${contactoDetalle.idContacto}" class="btn btn-link text-decoration-none text-dark p-0 small fw-medium">
                     <i class="bi bi-pencil me-1 text-success"></i> Editar
                 </button>
-                <button type="button" class="btn btn-link text-decoration-none text-danger p-0 small fw-medium">
-                    <i class="bi bi-trash me-1"></i> Eliminar
-                </button>
+                <form action="eliminar-contacto" method="POST" class="d-inline m-0">
+                    <input type="hidden" name="id" value="${contactoDetalle.idContacto}">
+                    <button type="submit" class="btn btn-link text-decoration-none text-danger p-0 small fw-medium border-0 bg-transparent">
+                        <i class="bi bi-trash me-1"></i> Eliminar
+                    </button>
+                </form>
             </div>
 
             <div class="text-center px-4">
-                <!-- Avatar grande con iniciales aseguradas (Nombre + Apellido Paterno) -->
                 <div class="avatar-lg mx-auto mb-3" style="background-color: #d1efe6; color: #0d684c;">
                         ${fn:toUpperCase(fn:substring(contactoDetalle.nombre, 0, 1))}${fn:toUpperCase(fn:substring(contactoDetalle.apellidoPaterno, 0, 1))}
                 </div>
@@ -39,7 +41,6 @@
                     </span>
                 </c:if>
 
-                <!-- Botones de acciones rápidas (Solo Llamar y Correo) -->
                 <div class="d-flex justify-content-center gap-3 mb-4">
                     <a href="tel:${contactoDetalle.telefono}" class="btn-action-card">
                         <i class="bi bi-telephone fs-5 text-success"></i>
@@ -53,7 +54,6 @@
                     </c:if>
                 </div>
 
-                <!-- Tarjetas de información (Teléfono principal, alternos y correo) -->
                 <div class="card border-0 shadow-sm mx-auto text-start mb-3" style="max-width: 500px; border-radius: 12px;">
                     <div class="card-body py-2 px-3">
                         <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
@@ -64,7 +64,6 @@
                             <i class="bi bi-telephone text-muted"></i>
                         </div>
 
-                        <!-- Recorrer la lista simple de teléfonos alternos -->
                         <%
                             mx.edu.utez.contactos.model.Contacto cDetalle = (mx.edu.utez.contactos.model.Contacto) request.getAttribute("contactoDetalle");
                             if (cDetalle != null && cDetalle.getTelefonosAlternos() != null) {
@@ -96,7 +95,6 @@
                     </div>
                 </div>
 
-                <!-- Fecha de alta -->
                 <c:if test="${not empty contactoDetalle.fechaAlta}">
                     <p class="text-muted small mt-4" style="font-size: 12px;">
                         Agregado el ${fn:substring(contactoDetalle.fechaAlta, 8, 10)}/${fn:substring(contactoDetalle.fechaAlta, 5, 7)}/${fn:substring(contactoDetalle.fechaAlta, 0, 4)}

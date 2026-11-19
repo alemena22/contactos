@@ -1,6 +1,7 @@
 package mx.edu.utez.contactos.model.structures;
 
 import mx.edu.utez.contactos.model.Contacto;
+import mx.edu.utez.contactos.model.structures.nodos.NodoDoble;
 
 public class ListaDoble {
     private NodoDoble inicio;

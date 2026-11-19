@@ -9,7 +9,7 @@ import mx.edu.utez.contactos.model.Contacto;
 import mx.edu.utez.contactos.model.Dao.ContactoDao;
 import mx.edu.utez.contactos.model.Dao.GrupoDao;
 import mx.edu.utez.contactos.model.structures.ListaDoble;
-import mx.edu.utez.contactos.model.structures.NodoDoble;
+import mx.edu.utez.contactos.model.structures.nodos.NodoDoble;
 
 import java.io.IOException;
 import java.net.URLEncoder;
